@@ -1,0 +1,29 @@
+# Example: run the Half-Life dedicated server itself under systemd (optional, but recommended).
+# systemd starts it at boot and again after a crash — and after the panel's restart button, if .env has
+#   RESTART_CMD=pkill -x hlds_linux
+# Edit User, the paths and the command line (map, maxplayers, port), then:
+#   sudo cp deploy/hlds.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now hlds
+# Console output: the file below (or journalctl -u hlds -f if you remove the StandardOutput lines).
+
+[Unit]
+Description=Half-Life dedicated server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=hlds
+Group=hlds
+WorkingDirectory=/home/hlds/hlds
+# "+map" is the first map after a restart; the panel's map order continues from there.
+ExecStart=/home/hlds/hlds/hlds_linux -game valve +ip 0.0.0.0 +port 27015 +maxplayers 16 +map crossfire
+Restart=always
+RestartSec=3
+# The console output goes into a file that the panel can show (.env: CONSOLE_LOG=/home/hlds/hlds/console.log).
+# Remove these two lines to keep it in journalctl instead. The file only grows — rotate it with logrotate.
+StandardOutput=append:/home/hlds/hlds/console.log
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target

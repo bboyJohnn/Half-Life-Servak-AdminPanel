@@ -1,0 +1,14 @@
+# Hand-picked views for map pictures (tools/build_assets.py): map  x y z  yaw pitch
+# Maps that are not listed get an automatic view from a spawn point.
+boot_camp      1168 -112 364      180  6
+bounce        -1216  528 -1464      0 28
+crossfire      -744  920 -1460     -9  6
+datacore      -2064 1540 1104      90  6
+frenzy          448    0  252     180  6
+gasworks       -304 -640  284      90  6
+lambda_bunker -2024  -64  492      64  6
+rapidcore       432 -1601 -188    135  6
+snark_pit        64 -1200  -28    135  6
+stalkyard     -1008 -304  192      42  6
+subtransit     -512 1680   12     280  6
+undertow       -880 -432  204     132  6
