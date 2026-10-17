@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <!-- Фон «Лаборатория»: стеновые панели комплекса, тёплый свет ламп, полоса «опасно» и большой знак λ. Нарисовано для панели. -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#17140e"/><stop offset=".55" stop-color="#0c0b08"/><stop offset="1" stop-color="#050505"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".76" cy=".18" r=".62">
+      <stop offset="0" stop-color="#ffaa00" stop-opacity=".17"/><stop offset=".5" stop-color="#ffaa00" stop-opacity=".04"/><stop offset="1" stop-color="#ffaa00" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx=".08" cy=".95" r=".5">
+      <stop offset="0" stop-color="#ff7a00" stop-opacity=".09"/><stop offset="1" stop-color="#ff7a00" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="tiles" width="240" height="160" patternUnits="userSpaceOnUse">
+      <rect x="1" y="1" width="238" height="158" fill="none" stroke="#fff" stroke-opacity=".035" stroke-width="2"/>
+      <rect x="10" y="10" width="220" height="140" fill="none" stroke="#000" stroke-opacity=".45" stroke-width="2"/>
+      <circle cx="18" cy="18" r="2.5" fill="#fff" fill-opacity=".05"/><circle cx="222" cy="18" r="2.5" fill="#fff" fill-opacity=".05"/>
+      <circle cx="18" cy="142" r="2.5" fill="#fff" fill-opacity=".05"/><circle cx="222" cy="142" r="2.5" fill="#fff" fill-opacity=".05"/>
+    </pattern>
+    <pattern id="hazard" width="56" height="56" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="28" height="56" fill="#d99a00"/><rect x="28" width="28" height="56" fill="#121212"/>
+    </pattern>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#g)"/>
+  <rect width="1920" height="1080" fill="url(#tiles)"/>
+  <rect width="1920" height="1080" fill="url(#glow)"/>
+  <rect width="1920" height="1080" fill="url(#glow2)"/>
+  <rect y="1012" width="1920" height="6" fill="#000" opacity=".7"/>
+  <rect y="1018" width="1920" height="36" fill="url(#hazard)" opacity=".5"/>
+  <rect y="1054" width="1920" height="26" fill="#070707"/>
+  <g transform="translate(1330 230) scale(18)" opacity=".075">
+    <circle cx="16" cy="16" r="14" fill="none" stroke="#ffaa00" stroke-width="2.6"/>
+    <path d="M9.6 25 14.7 13.7 11.7 7h2.8L23 25h-2.8l-4.2-8.9L12.4 25z" fill="#ffaa00"/>
+  </g>
+</svg>

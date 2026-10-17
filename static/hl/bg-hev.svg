@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <!-- Фон «Костюм HEV»: соты, строки развёртки и кольца прицела, как на экране шлема. Нарисовано для панели. -->
+  <defs>
+    <radialGradient id="g" cx=".5" cy=".45" r=".75">
+      <stop offset="0" stop-color="#1a1206"/><stop offset=".6" stop-color="#0b0804"/><stop offset="1" stop-color="#030201"/>
+    </radialGradient>
+    <pattern id="hex" width="56" height="100" patternUnits="userSpaceOnUse">
+      <path d="M28 66 0 50V16L28 0l28 16v34L28 66v34M28 0v-34" fill="none" stroke="#ffaa00" stroke-opacity=".07" stroke-width="1.5"/>
+    </pattern>
+    <pattern id="scan" width="8" height="4" patternUnits="userSpaceOnUse">
+      <rect width="8" height="1" fill="#000" fill-opacity=".35"/>
+    </pattern>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#g)"/>
+  <rect width="1920" height="1080" fill="url(#hex)"/>
+  <g fill="none" stroke="#ffaa00" transform="translate(1420 520)">
+    <circle r="330" stroke-opacity=".08" stroke-width="2"/>
+    <circle r="300" stroke-opacity=".12" stroke-width="10" stroke-dasharray="4 18"/>
+    <circle r="250" stroke-opacity=".06" stroke-width="2"/>
+    <circle r="120" stroke-opacity=".1" stroke-width="3" stroke-dasharray="120 68"/>
+    <path d="M-360 0h120M240 0h120M0-360v120M0 240v120" stroke-opacity=".12" stroke-width="3"/>
+  </g>
+  <g fill="#ffaa00" fill-opacity=".14">
+    <path d="M90 960h22v-22h18v22h22v18h-22v22h-18v-22H90z"/>
+    <rect x="170" y="950" width="160" height="40" rx="3" fill="none" stroke="#ffaa00" stroke-opacity=".16" stroke-width="3"/>
+    <rect x="178" y="958" width="110" height="24"/>
+  </g>
+  <g fill="none" stroke="#ffaa00" stroke-opacity=".16" stroke-width="4">
+    <path d="M40 120V40h80M1880 120V40h-80M40 960v80h80M1880 960v80h-80"/>
+  </g>
+  <rect width="1920" height="1080" fill="url(#scan)"/>
+</svg>

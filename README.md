@@ -1,52 +1,111 @@
-# Half-Life Web Panel
+<p align="center">
+  <img src="docs/banner.jpg" alt="Half-Life Web Panel" width="100%">
+</p>
 
-A web control panel for a **Half-Life 1 (1998) dedicated server** — the old **WON** HLDS 3.1.1.x as well as
-the current **Steam / SteamCMD** HLDS. One small Python process on the same machine as the server; you open it in a
-browser and manage the server without the console.
+<p align="center">
+  <img src="https://img.shields.io/badge/Half--Life-WON%20%26%20Steam%20HLDS-ffaa00?style=for-the-badge" alt="Half-Life WON & Steam HLDS">
+  <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.10+">
+  <img src="https://img.shields.io/badge/aiohttp-web%20server-2C5BB4?style=for-the-badge&logo=aiohttp&logoColor=white" alt="aiohttp">
+  <img src="https://img.shields.io/badge/SQLite-statistics-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite">
+  <br>
+  <img src="https://img.shields.io/badge/languages-9-b27700?style=for-the-badge" alt="9 languages">
+  <img src="https://img.shields.io/badge/Docker-not%20needed-4a4a4a?style=for-the-badge&logo=docker&logoColor=white" alt="Docker not needed">
+  <img src="https://img.shields.io/badge/phone-friendly-e36414?style=for-the-badge" alt="Phone-friendly">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea44f?style=for-the-badge" alt="MIT license"></a>
+</p>
 
-- **Overview** — server status, current map and time left, players with frags and time, machine load, memory,
-  disk, match history; quick buttons: next map, restart map, restart server.
-- **Players** — who is on the server (from the live log: user id, address, bot or human), kick, ban by IP,
-  lift bans, message to everyone. With **jk_botti**: minimum bots, players with bots, skill, remove all bots.
-- **Maps** — what is playing now (with a picture), load any map in a click (a window with its picture and what
-  comes next), and **your own map order**: drag tiles to reorder, switch maps off — the server plays exactly
-  that order, from the next map change, no restart.
-- **Server settings** — every setting of `server.cfg` (and `jk_botti.cfg`) with the value in the file and the live
-  value on the server; saved with a backup copy and applied at once. If the server only takes it after a map
-  change or a restart, the panel asks whether to do it now or later and keeps a reminder.
-- **Statistics** — matches, kills, weapons, maps, bots; **human players by IP address** (nicknames repeat):
-  visits with exact times, countries with flags, a player card (visits, play time, K/D, favourite weapons and
-  maps, best visits, when they come), records, top killers, new players, a calendar and a weekday × hour heat map.
-- **Logs** — the live game log, the server's own `L*.log` and the console, with filter and auto-refresh; the rcon
-  password that the engine writes into its log is cut out. **Console** — any rcon command with a command
-  reference. **Audit log** — every action done in the panel.
-- **9 languages** (Russian, English, German, French, Spanish, Portuguese, Polish, Japanese, Chinese) and three
-  looks: **Half-Life** (the 1998 menu colours, orange on black, with a lab / HEV suit / current map background),
-  **Steam 2003** (the olive Counter-Strike 1.6 menu) and a plain light/dark one. Background music (CC0) and,
-  if you build them from your own game, map pictures, the old menu sounds and the menu logo.
+<p align="center">
+  <b>A web control panel for a Half-Life 1 (1998) dedicated server — the old WON HLDS 3.1.1.x as well as the current Steam / SteamCMD HLDS.</b><br>
+  One small Python program on the same machine as the game server — open it in a browser and run the server without the console.
+</p>
 
-> The panel needs **no Docker, no bots and no extra scripts** — only your HLDS and Python 3. It was written for
-> a server that has Docker, jk_botti and watchdogs; all of that is optional here, and the matching buttons
-> simply do not appear when it is not configured.
+<p align="center">
+  <a href="#-screenshots"><b>📸 Screenshots</b></a> ·
+  <a href="#-installation-step-by-step"><b>🚀 Install</b></a> ·
+  <a href="#-where-everything-is-configured"><b>🧩 Configure</b></a> ·
+  <a href="#-troubleshooting"><b>🩺 Troubleshooting</b></a>
+</p>
+
+<p align="center"><img src="docs/screenshots/overview.jpg" alt="Overview page in the Half-Life look" width="92%"></p>
+
+## ✨ What it does
+
+| | |
+|---|---|
+| 🏠 **Overview** | Status of the server, the current map with its picture and time left, the next map, who is on the map with frags and time, machine load, memory and disk, totals for all time; next map, restart the map, restart the server. |
+| 👥 **Players and bots** | Who is on the server — user id, address, bot or human — straight from the live log; kick, ban by IP (written to `listip.cfg`), lift bans, message to everyone. With **jk_botti**: minimum bots, players with bots, skill, remove all bots. |
+| 🗺️ **Maps** | What is playing, how long and what comes next; **load any map** in a click — a window with its picture and the order after it; **your own map order** as tiles with pictures: drag to reorder, switch maps off — the server follows it from the next map change, no restart. |
+| ⚙️ **Server settings** | Every setting of `server.cfg` (and `jk_botti.cfg`) with the value in the file and the live value on the server. A backup copy before every save, applied at once through rcon; if the server only takes it after a map change or a restart, the panel asks — now or later — and keeps a reminder. |
+| 📊 **Statistics** | Matches, kills, weapons, maps, bots; **human players by IP address** (nicknames repeat): every visit with exact time, country and flag; a **player card** (visits, play time, K/D, favourite weapons and maps, best visits, where they play best, days of the week, hours); records, top killers, newcomers, how long visits last; a calendar and a weekdays × hours heat map. |
+| 📜 **Logs · Console · Audit log** | The live game log, the server's own `L*.log` and the console with filter and auto-refresh (the rcon password the engine writes into its log is cut out); any rcon command with a command reference; every action done in the panel. |
+| 🌍 **9 languages** | Russian, English, German, French, Spanish, Portuguese, Polish, Japanese, Chinese — the browser's language by default; country names in the panel's language. |
+| 🎨 **Half-Life look** | The colours of the 1998 menu (orange on black, straight from the game's own scheme file), a lab, HEV suit or current-map background, CC0 background music — and, built from **your own** game, map pictures, the old WON menu sounds and its spinning **HALF-LIFE** banner. Or the olive **Steam 2003** look, or a plain light / dark one. |
+| 📱 **Phone-friendly** | Every page fits a phone screen. |
+
+> [!TIP]
+> All you need is a **Half-Life dedicated server that already runs** — started however you like — and Python.
+> No Docker, no bots, no watchdogs or helper scripts on the game server's side; no web server and no database
+> server for the panel either. Statistics live in an SQLite file next to the panel. Docker (restart button,
+> container card) and jk_botti (bots card) are supported when you have them — otherwise those buttons simply
+> do not appear.
+
+## 📸 Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/login.jpg" alt="Login"><br><b>Login</b> — the Half-Life look with the spinning banner of the old WON menu, built from your own game</td>
+    <td width="50%"><img src="docs/screenshots/maps.jpg" alt="Maps"><br><b>Maps</b> — what is playing, a map picker with pictures and your own map order</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/load-map.jpg" alt="Load a map"><br><b>Load a map</b> — its picture and what the server plays after it</td>
+    <td><img src="docs/screenshots/players.jpg" alt="Players and bots"><br><b>Players and bots</b> — kick, ban by IP, jk_botti settings (HEV suit background)</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/humans.jpg" alt="Human players"><br><b>Human players</b> — every visit with time, country and IP; totals per address</td>
+    <td><img src="docs/screenshots/summary.jpg" alt="Summary"><br><b>Summary</b> — weapons, countries, records, top killers, maps of humans</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/player-card.jpg" alt="Player card"><br><b>Player card</b> — visits, K/D, weapons, maps, best visits, days and hours</td>
+    <td><img src="docs/screenshots/calendar.jpg" alt="Calendar"><br><b>Calendar</b> — visits per day, a weekdays × hours heat map, the visits of a day</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/server-settings.jpg" alt="Server settings"><br><b>Server settings</b> — <code>server.cfg</code> as a form, live values next to the file</td>
+    <td><img src="docs/screenshots/prefs.jpg" alt="Panel settings"><br><b>Panel settings</b> — 9 languages, 3 looks, backgrounds, music and menu sounds</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/steam.jpg" alt="Steam 2003 look"><br><b>Steam 2003</b> — the olive look of the Counter-Strike 1.6 menu</td>
+    <td><img src="docs/screenshots/plain-dark.jpg" alt="Plain look, dark"><br><b>Plain look</b> — dark…</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/plain-light.jpg" alt="Plain look, light"><br>…and light</td>
+    <td><img src="docs/screenshots/japanese.jpg" alt="Japanese interface"><br><b>日本語</b> — and eight more languages</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/russian.jpg" alt="Russian interface"><br><b>Русский</b> — the panel's source language</td>
+    <td><img src="docs/screenshots/mobile.jpg" alt="On a phone"><br><b>On a phone</b> — overview, statistics, maps</td>
+  </tr>
+</table>
+
+<sub>The screenshots were taken with demo data: nicknames and IP addresses (from the ranges reserved for documentation) are made up. Map pictures are rendered by the panel's own tool from the maps of the game.</sub>
 
 ---
 
-## Contents
+## 📖 Contents
 
-1. [Requirements](#requirements)
-2. [Installation, step by step](#installation-step-by-step)
-3. [Where everything is configured](#where-everything-is-configured)
-4. [Updating](#updating)
-5. [How it works](#how-it-works)
-6. [Security](#security)
-7. [Troubleshooting](#troubleshooting)
-8. [Translations](#translations)
-9. [Project layout](#project-layout)
-10. [Legal](#legal)
+1. [Requirements](#-requirements)
+2. [Installation, step by step](#-installation-step-by-step)
+3. [Where everything is configured](#-where-everything-is-configured)
+4. [Updating](#-updating)
+5. [How it works](#-how-it-works)
+6. [Security](#-security)
+7. [Troubleshooting](#-troubleshooting)
+8. [Translations](#-translations)
+9. [Project layout](#-project-layout)
+10. [Legal](#-legal)
 
 ---
 
-## Requirements
+## 🧰 Requirements
 
 | What | Notes |
 |---|---|
@@ -68,7 +127,7 @@ Replace these with your own paths and user everywhere.
 
 ---
 
-## Installation, step by step
+## 🚀 Installation, step by step
 
 ### Step 1. Look at your server
 
@@ -101,7 +160,7 @@ python3 --version
 ### Step 3. Download the panel and install its packages
 
 ```bash
-sudo git clone https://github.com/bboyJohnn/halflife-AdminPanel.git /opt/hl-panel
+sudo git clone https://github.com/bboyJohnn/Half-Life-Servak-AdminPanel.git /opt/hl-panel
 ```
 
 ```bash
@@ -158,7 +217,7 @@ HL_DIR=/home/hlds/hlds/valve
 
 Everything else (server.cfg, mapcycle.txt, maps, logs, the rcon password from server.cfg) is found from it. If the
 server listens on another port, set `HL_PORT`; to show the address players connect to, set `PUBLIC_ADDRESS`.
-The full list is in [Where everything is configured](#where-everything-is-configured).
+The full list is in [Where everything is configured](#-where-everything-is-configured).
 
 ### Step 6. Set the panel password
 
@@ -301,7 +360,7 @@ If the server runs the [jk_botti](https://github.com/Bots-United/jk_botti) bot, 
 
 ---
 
-## Where everything is configured
+## 🧩 Where everything is configured
 
 Everything is in **`.env`** (see `.env.example` for comments). Paths may use `${KEY}` of a key above; relative
 paths start at the folder of `.env`. Check with `python3 app.py --check`.
@@ -339,7 +398,7 @@ on the **Panel settings** page (also reachable from the login screen).
 
 ---
 
-## Updating
+## 🔄 Updating
 
 ```bash
 cd /opt/hl-panel
@@ -362,16 +421,18 @@ sudo systemctl restart hl-panel
 
 ---
 
-## How it works
+## ⚙️ How it works
 
 - **Queries.** Status, players and settings come from the public queries every server browser uses (`info`,
-  `players`, `rules` on WON; `A2S_INFO`, `A2S_PLAYER`, `A2S_RULES` with the challenge on Steam). Actions go
-  through **rcon** (`challenge rcon` + `rcon`). The panel figures out which protocol your server speaks by itself.
+  `players`, `rules` on WON; `A2S_INFO`, `A2S_PLAYER`, `A2S_RULES` with the challenge on Steam) — a few
+  milliseconds each. Actions go through **rcon** (`challenge rcon` + `rcon`). The panel figures out which protocol
+  your server speaks by itself.
 - **Live log.** The old engine writes every rcon command into its log together with the password, so the panel does
   *not* poll `rcon status`: who is on the server, their user id and address come from the live log (connect / enter
   / disconnect / kick lines), frags and time from the public `players` query. Visits of human players are stored with
   exact times; when the server restarts, open visits are closed at the last moment the player was seen.
-- **Map names.** A WON server's log has no map names — the panel asks the server (`info`) when it sees
+- **Map names.** A Steam server writes them into its log (`Loading map`, `Started map`) and the panel takes them
+  from there. A WON server's log has no map names — the panel asks the server (`info`) when it sees
   "Log file started" and remembers which map was loaded at that moment.
 - **Map order.** The game library reads `mapcycle.txt` once and re-reads it only when the name in the
   `mapcyclefile` setting changes. So after saving the order the panel writes `mapcycle.txt` rotated so that **the
@@ -388,7 +449,7 @@ sudo systemctl restart hl-panel
 
 ---
 
-## Security
+## 🔒 Security
 
 - Out of the box the panel accepts connections **only from the same machine** (`PANEL_HOST=127.0.0.1`,
   `PANEL_ALLOWED_PEERS=127.0.0.1,::1`). Reach it with an SSH tunnel or a reverse proxy with HTTPS.
@@ -402,7 +463,7 @@ sudo systemctl restart hl-panel
 
 ---
 
-## Troubleshooting
+## 🩺 Troubleshooting
 
 | Problem | What to do |
 |---|---|
@@ -417,7 +478,7 @@ sudo systemctl restart hl-panel
 
 ---
 
-## Translations
+## 🌍 Translations
 
 The source language is Russian; the dictionaries are `static/i18n/<code>.js` (`en de fr es pt pl ja zh`). Every
 text of the panel is wrapped in `L('…')` in `static/app.js` and that Russian text is the key; server messages are
@@ -436,7 +497,7 @@ A missing translation just shows the Russian text — nothing breaks. Keys start
 
 ---
 
-## Project layout
+## 🗂️ Project layout
 
 ```
 app.py            web server, API, background tasks, live-log receiver; --init and --check (cli.py)
@@ -455,11 +516,14 @@ passwords.py      password hash
 static/           the web page: app.js, app.css, boot.js, i18n/, fonts/, music/, hl/, flags/
 tools/            i18n.py, passwd.py, build_assets.py (+ bsp_render.py, map_cameras.txt)
 deploy/           systemd units for the panel and (example) for HLDS
+docs/             the banner and screenshots of this README
 ```
 
 ---
 
-## Legal
+## ⚖️ Legal
+
+The panel's code is under the [MIT license](LICENSE).
 
 Half-Life® is a trademark of Valve Corporation. This panel is not affiliated with or endorsed by Valve.
 Map pictures, menu sounds, the menu logo and the soundtrack are Valve's and are **not** included — the panel builds

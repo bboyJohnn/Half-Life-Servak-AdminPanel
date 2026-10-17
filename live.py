@@ -64,6 +64,9 @@ class Live:
             row = db.execute("SELECT ts, map FROM map_starts ORDER BY ts DESC LIMIT 1").fetchone()
             if row:
                 self.map_since, self.current_map = row["ts"], row["map"]
+        # карта в том месте лога, которое сейчас читается (при дочитывании старых строк
+        # она не совпадает с текущей): её получают новые заходы
+        self.log_map, self.log_map_ts = self.current_map, self.map_since or 0
 
     def _db(self):
         db = sqlite3.connect(self.db_path, timeout=10)
@@ -132,6 +135,14 @@ class Live:
             for ts, kind, d in self._events(data[:cut + 1]):
                 if ts < self.skip_before:
                     continue
+                if kind == "map_name":
+                    self._note_map(db, ts, d["map"])
+                elif kind == "map_start":
+                    # карта, которую панель уже узнала для этого момента (запросом info)
+                    row = db.execute("SELECT map FROM map_starts WHERE ts BETWEEN ? AND ?"
+                                     " ORDER BY ABS(ts - ?) LIMIT 1", (ts - 5, ts + 15, ts)).fetchone()
+                    if row:
+                        self.log_map, self.log_map_ts = row["map"], ts
                 self._apply_session(db, ts, kind, d)
                 if write_live:
                     self._apply_live(ts, kind, d)
@@ -203,12 +214,24 @@ class Live:
         if not mapname:
             return
         with self._db() as db:
-            db.execute("INSERT OR REPLACE INTO map_starts(ts, map) VALUES (?,?)", (int(ts), mapname))
-            for r in db.execute("SELECT id, maps FROM player_sessions WHERE left_at IS NULL").fetchall():
-                maps = [m for m in r["maps"].split(",") if m]
-                if mapname not in maps:
-                    maps.append(mapname)
-                    db.execute("UPDATE player_sessions SET maps=? WHERE id=?", (",".join(maps), r["id"]))
+            self._store_map(db, ts, mapname)
+
+    def _note_map(self, db, ts, mapname):
+        """Карта из строки лога «Loading map» / «Started map» (их пишет Steam-сервер).
+        Обе строки об одной загрузке — запись одна."""
+        if mapname == self.log_map and 0 <= ts - self.log_map_ts < 60:
+            return
+        self._store_map(db, ts, mapname)
+
+    def _store_map(self, db, ts, mapname):
+        db.execute("INSERT OR REPLACE INTO map_starts(ts, map) VALUES (?,?)", (int(ts), mapname))
+        for r in db.execute("SELECT id, maps FROM player_sessions WHERE left_at IS NULL").fetchall():
+            maps = [m for m in r["maps"].split(",") if m]
+            if mapname not in maps:
+                maps.append(mapname)
+                db.execute("UPDATE player_sessions SET maps=? WHERE id=?", (",".join(maps), r["id"]))
+        if ts >= self.log_map_ts:
+            self.log_map, self.log_map_ts = mapname, int(ts)
         if self.map_since is None or ts >= self.map_since:
             self.current_map, self.map_since = mapname, int(ts)
 
@@ -239,7 +262,7 @@ class Live:
                 db.execute(
                     "INSERT INTO player_sessions(name, uid, address, joined_at, last_seen, maps)"
                     " VALUES (?,?,?,?,?,?)",
-                    (d["name"], d["uid"], d.get("address", ""), ts, ts, self.current_map or ""))
+                    (d["name"], d["uid"], d.get("address", ""), ts, ts, self.log_map or self.current_map or ""))
             else:
                 db.execute("UPDATE player_sessions SET last_seen=MAX(last_seen, ?),"
                            " address=CASE WHEN ?<>'' THEN ? ELSE address END WHERE id=?",

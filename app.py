@@ -384,8 +384,13 @@ class Panel:
             rows = self.online(players)
             bots = sum(1 for p in rows if p["bot"])
             since = self.live.map_since if self.live.current_map == info["map"] else None
+            order = await self.blocking(self.pool.pool)
+            nxt = cfg_mod.MapPool.following(order, info["map"], 1)
+            pics = set(await self.blocking(self.previews))
             server = {
                 "hostname": info["hostname"], "map": info["map"], "map_since": since,
+                "next": nxt[0] if nxt else None,
+                "preview": info["map"] in pics, "next_preview": bool(nxt) and nxt[0] in pics,
                 "maxplayers": info["maxplayers"], "players": rows,
                 "humans": len(rows) - bots, "bots": bots,
                 "timelimit": rules.get("mp_timelimit", ""), "fraglimit": rules.get("mp_fraglimit", ""),

@@ -6,10 +6,11 @@
 дописывает пакеты в live.log как есть: FF FF FF FF "log " + строка + "\n" + 00.
 Строка: «L 10/03/2026 - 18:12:54: событие». Время — часы контейнера, то есть UTC.
 
-Чего в логе этой версии НЕТ: названия карты. Смена карты видна только по паре
+Названия карты в логе WON-сервера НЕТ. Смена карты видна только по паре
 «Log file closed» / «Log file started». Какая карта загрузилась, панель узнаёт
 у сервера сама (запрос info) в момент, когда видит «Log file started», и пишет в
-таблицу map_starts — по ней статистика подставляет карту в матчи.
+таблицу map_starts — по ней статистика подставляет карту в матчи. Steam-сервер
+пишет карту сам («Loading map», «Started map») — тогда она берётся прямо из лога.
 
 Игрок в строке: "Имя<userid><WONID><команда>". У ботов WONID = BOT (кроме строк
 Kick, там 0). У живых игроков WON2 без авторизации — 4294967295.
@@ -31,6 +32,8 @@ DISCONNECT_RE = re.compile("^" + P.format("p") + " disconnected")
 RENAME_RE = re.compile("^" + P.format("p") + r' changed name to "(?P<new>.*)"')
 SAY_RE = re.compile("^" + P.format("p") + r' say(?:_team)? "(?P<text>.*)"')
 KICK_RE = re.compile("^Kick: " + P.format("p") + r' was kicked by "(?P<by>[^"]*)"')
+# Steam-сервер пишет название карты сам: «Loading map "crossfire"», «Started map "crossfire" (CRC …)»
+MAP_RE = re.compile(r'^(?:Loading|Started) map "(?P<map>[^"]+)"')
 RCON_RE = re.compile(r'(rcon \S+ ")[^"]*(")')
 
 
@@ -63,7 +66,7 @@ def is_bot(won):
 def parse(text):
     """Строка лога → (время UTC, событие, данные) или None.
 
-    События: map_start, map_end, kill, suicide, connect, enter, disconnect,
+    События: map_start, map_end, map_name, kill, suicide, connect, enter, disconnect,
     rename, say, kick, other.
     """
     m = LINE_RE.match(text)
@@ -75,6 +78,9 @@ def parse(text):
         return ts, "map_start", {}
     if body.startswith("Log file closed"):
         return ts, "map_end", {}
+    mp = MAP_RE.match(body)
+    if mp:
+        return ts, "map_name", {"map": mp.group("map").lower()}
     k = KILL_RE.match(body)
     if k:
         return ts, "kill", {"killer": k.group("k"), "killer_uid": int(k.group("k_uid")),

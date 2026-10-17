@@ -166,7 +166,7 @@ class Stats:
                 match = {"start": ts, "last": ts, "slots": {}, "gone": [], "kills": 0, "events": 0}
                 match_pos = line_pos
                 continue
-            if match is None or kind in ("map_end", "other", "say"):
+            if match is None or kind in ("map_end", "map_name", "other", "say"):
                 continue
             match["events"] += 1
             match["last"] = ts

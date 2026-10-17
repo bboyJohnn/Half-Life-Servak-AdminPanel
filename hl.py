@@ -76,10 +76,27 @@ class HLServer:
             whole = b"".join(parts[i] for i in sorted(parts)) + whole
         return whole
 
-    def _exchange(self, sock, payload, timeout, collect):
+    def _exchange(self, sock, payload, timeout, collect, split_aware=False):
+        """Запрос и ответ. split_aware — ответ на публичный запрос: если он пришёл одним
+        пакетом, больше не ждём; если частями (FE FF FF FF) — ждём, пока придут все части.
+        Иначе (rcon) собираем всё, что придёт за collect секунд: длинный ответ rcon — это
+        несколько отдельных пакетов без номеров."""
         sock.settimeout(timeout)
         sock.sendto(HEADER + payload, (self.host, self.port))
         packets = [sock.recvfrom(65535)[0]]
+        if split_aware:
+            if not packets[0].startswith(SPLIT) or len(packets[0]) < 9:
+                return self._join(packets)
+            total = packets[0][8] & 0x0F
+            deadline = time.time() + max(collect, 1.0)
+            while len({p[8] >> 4 for p in packets if p.startswith(SPLIT) and len(p) > 8}) < total \
+                    and time.time() < deadline:
+                sock.settimeout(max(0.05, deadline - time.time()))
+                try:
+                    packets.append(sock.recvfrom(65535)[0])
+                except socket.timeout:
+                    break
+            return self._join(packets)
         deadline = time.time() + collect
         while time.time() < deadline:
             sock.settimeout(max(0.05, deadline - time.time()))
@@ -92,7 +109,7 @@ class HLServer:
     def _query(self, payload, timeout=2.0, collect=0.15):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
-            return self._exchange(s, payload, timeout, collect)
+            return self._exchange(s, payload, timeout, collect, split_aware=True)
         finally:
             s.close()
 
@@ -100,10 +117,10 @@ class HLServer:
         """Запрос Steam: на первый ответ «A» с числом повторить запрос с этим числом."""
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
-            raw = self._exchange(s, payload + (HEADER if challenge else b""), timeout, collect)
+            raw = self._exchange(s, payload + (HEADER if challenge else b""), timeout, collect, split_aware=True)
             for _ in range(2):
                 if raw[4:5] == b"A" and len(raw) >= 9:
-                    raw = self._exchange(s, payload + raw[5:9], timeout, collect)
+                    raw = self._exchange(s, payload + raw[5:9], timeout, collect, split_aware=True)
                 else:
                     break
             return raw if raw[4:5] in want else b""
