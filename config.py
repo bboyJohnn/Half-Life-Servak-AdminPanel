@@ -32,7 +32,9 @@ def load_env(path):
             continue
         key, value = line.split("=", 1)
         value = value.strip()
-        if len(value) > 1 and value[0] == value[-1] and value[0] in "\"'":
+        if value.startswith("#"):
+            value = ""                              # «ключ=   # пояснение» — значение пустое
+        elif len(value) > 1 and value[0] == value[-1] and value[0] in "\"'":
             value = value[1:-1]
         else:
             value = ENV_COMMENT.sub("", value)      # «ключ=значение   # пояснение»
