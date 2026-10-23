@@ -899,9 +899,9 @@ ACTIONS.player = async (d) => {
     <h3 class="mt16">${L('Когда заходит')}</h3><div class="hours small" id="pc-h"></div>
     <div class="hours-labels">${Array.from({ length: 24 }, (_, i) => '<span>' + i + '</span>').join('')}</div>
     <h3 class="mt16">${L('Последние заходы')}</h3><div class="tbl-wrap"><table><thead><tr><th>${L('Зашёл')}</th><th class="num">${L('Пробыл')}</th>
-      <th>${L('Ник')}</th><th>${L('Карты')}</th><th class="num">${L('У / С')}</th></tr></thead><tbody>${c.recent.map((r) => `<tr><td class="nowrap">${fmtDateTime(r.joined_at)}</td>
-      <td class="num">${r.online ? pill(L('сейчас'), 'ok') : fmtDur(r.duration)}</td><td>${esc(r.name)}</td>
-      <td class="mono">${r.maps.map(mapLink).join(', ')}</td><td class="num">${r.kills} / ${r.deaths}</td></tr>`).join('')}</tbody></table></div>
+      <th>${L('Ник')}</th><th>${L('Карты')}</th><th class="num nowrap">${L('У / С')}</th></tr></thead><tbody>${c.recent.map((r) => `<tr><td class="nowrap">${fmtDateTime(r.joined_at)}</td>
+      <td class="num nowrap">${r.online ? pill(L('сейчас'), 'ok') : fmtDur(r.duration)}</td><td>${esc(r.name)}</td>
+      <td class="mono">${r.maps.map(mapLink).join(', ')}</td><td class="num nowrap">${r.kills} / ${r.deaths}</td></tr>`).join('')}</tbody></table></div>
     ${c.same_names_from.length ? '<div class="note mt12">' + L('Этим же ником заходили и с других адресов: {0} — возможно, это другой человек.',
       '<span class="mono">' + c.same_names_from.map(esc).join(', ') + '</span>') + '</div>' : ''}`, 'wide');
   hoursChart(m.querySelector('#pc-h'), hours);
@@ -1437,12 +1437,12 @@ function trackingNote() {
 function sessionsTable(rows, limit) {
   if (!rows.length) return '<div class="empty">' + L('Пока никто из живых игроков не заходил.') + ' ' + esc(trackingNote()) + '</div>';
   return `<div class="tbl-wrap"><table><thead><tr><th>${L('Зашёл')}</th><th class="num">${L('Пробыл')}</th><th>${L('Игрок')}</th>
-    <th>${L('IP · страна')}</th><th>${L('Карты')}</th><th class="num">${L('У / С')}</th></tr></thead><tbody>${
+    <th>${L('IP · страна')}</th><th>${L('Карты')}</th><th class="num nowrap">${L('У / С')}</th></tr></thead><tbody>${
     rows.slice(0, limit).map((s) => `<tr><td class="nowrap">${fmtDateTime(s.joined_at)}</td>
       <td class="num nowrap">${s.online ? pill(L('на сервере'), 'ok') : fmtDur(sessEnd(s) - s.joined_at)}</td>
       <td>${playerBtn(s.ip, s.name)}</td>
       <td class="nowrap">${flagHtml(s.country)} <span class="mono">${esc(s.ip || s.address || '—')}</span></td>
-      <td class="mono">${s.maps.map(mapLink).join(', ')}</td><td class="num">${s.kills} / ${s.deaths}</td></tr>`).join('')
+      <td class="mono">${s.maps.map(mapLink).join(', ')}</td><td class="num nowrap">${s.kills} / ${s.deaths}</td></tr>`).join('')
   }</tbody></table></div><p class="muted">${esc(trackingNote())}</p>`;
 }
 
